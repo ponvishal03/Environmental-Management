@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Solid Waste: Generation, Processing &amp; Trends</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+          body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', sans-serif;
+        background-color: #f0f4f8;
+        overflow: hidden;
+    }
+
+    .viewport {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f0f4f8;
+    }
+        .slide-container {
+        width: 1280px;
+        height: 720px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        background-color: #ffffff;
+        overflow: hidden;
+        transform-origin: center;
+        transform: scale(min(100vw / 1280, 100vh / 720));
+        box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        border-radius: 12px;
+    }
+        .header-bar {
+            height: 80px;
+            background-color: #ffffff;
+            border-bottom: 4px solid #d97706; /* Amber color for Waste theme */
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            flex-shrink: 0;
+        }
+        .title-text {
+            font-family: 'Montserrat', sans-serif;
+            color: #1f2937;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .subtitle-text {
+            font-family: 'Roboto', sans-serif;
+            color: #d97706;
+            font-size: 18px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        .content-area {
+            flex: 1;
+            padding: 30px 40px;
+            display: flex;
+            gap: 30px;
+            background-color: #f8fafc;
+            overflow: hidden;
+        }
+        .main-chart-col {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .side-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .chart-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .chart-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #334155;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .chart-wrapper {
+            flex: 1;
+            position: relative;
+            min-height: 0;
+        }
+        .stat-box {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 4px solid #d97706;
+        }
+        .stat-boxx {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 4px solid #d90606;
+        }
+        .stat-boxxx {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 4px solid #0d06d9;
+        }
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1f2937;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        .insight-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .insight-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.5;
+            padding: 10px;
+            background-color: #fff7ed;
+            border-radius: 8px;
+        }
+        .insight-icon {
+            color: #d97706;
+            font-size: 16px;
+            margin-top: 2px;
+        }
+        .facility-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 12px;
+        }
+        .facility-item {
+            font-size: 13px;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background-color: #f8fafc;
+            border-radius: 6px;
+        }
+        .status-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            text-transform: uppercase;
+        }
+        .status-active { background-color: #fee2e2; color: #dc2626; }
+        .status-processing { background-color: #dcfce7; color: #16a34a; }
+        .status-closed { background-color: #f1f5f9; color: #64748b; }
+        .status-progress { background-color: #fef3c7; color: #d97706; }
+        
+        .footer-strip {
+            height: 40px;
+            background-color: #fff;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 12px;
+            color: #64748b;
+            flex-shrink: 0;
+        }
+        .side-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;      /* enable scrolling */
+    padding-right: 6px;   /* room for scrollbar */
+}
+
+        .next-btn, .prev-btn {
+    position: fixed;
+    bottom: 30px;
+    width: 56px;
+    height: 56px;
+    background: #00695c;
+    color: white;
+    font-size: 26px;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    transition: transform 0.2s ease, background 0.2s ease;
+    z-index: 99999;
+}
+
+.next-btn { right: 40px; }
+.prev-btn { left: 40px; }
+
+.next-btn:hover, .prev-btn:hover {
+    transform: scale(1.1);
+    background: #004d40;
+}
+    </style>
+</head>
+<body>
+<a href="slide6.html" class="prev-btn">⮜</a>
+<a href="slide8.html" class="next-btn">⮞</a>
+<div class="viewport">
+<div class="slide-container">
+<!-- Header -->
+<div class="header-bar">
+<div>
+<h1 class="title-text">Solid Waste: Generation, Processing &amp; Trends</h1>
+<p class="subtitle-text">Municipal Waste Statistics &amp; Infrastructure Status</p>
+</div>
+<div class="ml-auto flex items-center gap-3">
+<i class="fas fa-recycle text-2xl text-yellow-600"></i>
+<span class="text-sm font-bold text-gray-500 uppercase tracking-wider">Waste Mgmt</span>
+</div>
+</div>
+<!-- Main Content -->
+<div class="content-area">
+<!-- Left Column: Main Charts -->
+<div class="main-chart-col">
+<!-- Top Chart: Generation vs Treatment -->
+<div class="side-col">
+<div class="chart-card" style="flex: 1.2;">
+<div class="chart-header">
+<h3 class="chart-title">
+<i class="fas fa-chart-bar text-yellow-600"></i>
+                            Waste Generation vs. Treatment (2020 - 2025)
+                        </h3>
+<div class="flex gap-2 text-xs font-medium bg-gray-100 px-3 py-1 rounded-full text-gray-600">
+<span class="w-2 h-2 rounded-full bg-gray-500 mt-1"></span> Generated
+                            <span class="w-2 h-2 rounded-full bg-green-500 mt-1 ml-2"></span> Treated
+                        </div>
+</div>
+<div class="chart-wrapper">
+<canvas id="wasteTrendChart"></canvas>
+</div>
+</div>
+<!-- Bottom Chart: Treatment Pathways -->
+<div class="chart-card" style="flex: 0.8;">
+<div class="chart-header">
+<h3 class="chart-title">
+<i class="fas fa-pie-chart text-green-600"></i>
+                            Current Treatment Pathways Breakdown
+                        </h3>
+<span class="text-xs font-bold text-gray-400 uppercase">Processing Method</span>
+</div>
+<div class="chart-wrapper">
+<canvas id="pathwayPieChart"></canvas>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Stats & Insights -->
+<div class="side-col">
+<!-- Key Stat Box -->
+<div class="stat-box">
+<p class="stat-label">Daily Generation (Avg)</p>
+<div class="flex items-end gap-3">
+<p class="stat-value">~6,300 TPD</p>
+<span class="text-yellow-600 font-bold mb-2 text-sm bg-yellow-50 px-2 py-1 rounded">HIGH VOLUME</span>
+</div>
+<p class="text-xs text-gray-500 mt-2">
+<i class="fas fa-truck-loading text-gray-400 mr-1"></i> Comparable to C&amp;D Waste (~8.5k MT/Day)
+                    </p>
+</div>
+<!-- Key Insights -->
+<div class="stat-boxx">
+<div class="chart-card" style="flex: 1.1;">
+<div class="chart-header">
+<h3 class="chart-title">Key Insights</h3>
+</div>
+<ul class="insight-list">
+<li class="insight-item">
+<i class="fas fa-exclamation-triangle insight-icon"></i>
+<p class="m-0"><strong>Treatment Gap:</strong> Approximately 15-20% of daily waste remains untreated or sent to saturated dumpsites, though capacity is improving.</p>
+</li>
+<li class="insight-item">
+<i class="fas fa-trash-restore insight-icon"></i>
+<p class="m-0"><strong>Legacy Challenges:</strong> The Deonar dumping ground remains a critical concern with ongoing efforts for biomining and capacity reduction.</p>
+</li>
+<li class="insight-item">
+<i class="fas fa-leaf insight-icon"></i>
+<p class="m-0"><strong>Wet Waste Focus:</strong> BMC emphasizes decentralized rapid composting to reduce landfill load, mandating segregation at source.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- Infrastructure Status -->
+<div class="stat-boxxx">
+<div class="chart-card" style="flex: 1.2;">
+<div class="chart-header">
+<h3 class="chart-title">Infrastructure Status</h3>
+</div>
+<div class="facility-grid">
+<div class="facility-item">
+<span class="font-bold text-gray-700">Deonar Dump</span>
+<span class="status-badge status-active">Saturated / Active</span>
+</div>
+<div class="facility-item">
+<span class="font-bold text-gray-700">Kanjurmarg Site</span>
+<span class="status-badge status-processing">Scientific Processing</span>
+</div>
+<div class="facility-item">
+<span class="font-bold text-gray-700">Mulund Dump</span>
+<span class="status-badge status-progress">Closure Process</span>
+</div>
+<div class="facility-item">
+<span class="font-bold text-gray-700">Gorai Dump</span>
+<span class="status-badge status-closed">Scientifically Closed</span>
+</div>
+</div>
+<p class="text-xs text-gray-400 mt-3 italic">Source: BMC Solid Waste Management Dept.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<div class="footer-strip">
+<p>Data Source: MyBMC Landfill Management; MPCB Annual Report 2023-24 (Tables 5.54-5.57)</p>
+</div>
+</div>
+</div>
+<script>
+        // Chart 1: Generation vs Treatment Trend
+        const ctx1 = document.getElementById('wasteTrendChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['2020-21', '2021-22', '2022-23', '2023-24', '2024-25'],
+                datasets: [
+                    {
+                        label: 'Generated (MT/Day)',
+                        data: [5800, 6000, 6150, 6300, 6450],
+                        backgroundColor: '#9ca3af', // Gray
+                        borderRadius: 4,
+                        barPercentage: 0.6,
+                        order: 2
+                    },
+                    {
+                        label: 'Treated (MT/Day)',
+                        data: [3200, 3800, 4500, 5200, 5600],
+                        backgroundColor: '#16a34a', // Green
+                        borderRadius: 4,
+                        barPercentage: 0.6,
+                        order: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        titleColor: '#1f2937',
+                        bodyColor: '#1f2937',
+                        borderColor: '#e2e8f0',
+                        borderWidth: 1,
+                        padding: 10
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#f1f5f9' },
+                        title: { display: true, text: 'Metric Tonnes Per Day (TPD)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Chart 2: Treatment Pathways Pie Chart
+        const ctx2 = document.getElementById('pathwayPieChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Bioreactor (Kanjur)', 'Unprocessed/Dumping', 'Composting/Recycling', 'Others'],
+                datasets: [{
+                    data: [55, 25, 15, 5],
+                    backgroundColor: [
+                        '#16a34a', // Green (Bioreactor)
+                        '#dc2626', // Red (Dumping)
+                        '#3b82f6', // Blue (Compost)
+                        '#9ca3af'  // Gray (Others)
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff',
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            font: { size: 11, family: 'Roboto' },
+                            boxWidth: 12,
+                            usePointStyle: true
+                        }
+                    }
+                }
+            }
+        });
+        document.addEventListener("keydown", e => {
+  if (e.key === "ArrowLeft") location.href = "slide6.html";
+  if (e.key === "ArrowRight") location.href = "slide8.html";
+});
+    </script>
+</body>
+</html>

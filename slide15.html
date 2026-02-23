@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>References &amp; Data Sources</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;family=Roboto:wght@300;400;500;700&amp;family=Roboto+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+       .body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', sans-serif;
+        background-color: #f0f4f8;
+        overflow: hidden;
+    }
+
+    .viewport {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f0f4f8;
+    }
+        .slide-container {
+        width: 1280px;
+        height: 720px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        background-color: #ffffff;
+        overflow: hidden;
+        transform-origin: center;
+        transform: scale(min(100vw / 1280, 100vh / 720));
+        box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        border-radius: 12px;
+    }
+        .header-bar {
+            height: 80px;
+            background-color: #ffffff;
+            border-bottom: 4px solid #00695c;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            flex-shrink: 0;
+        }
+        .title-text {
+            font-family: 'Montserrat', sans-serif;
+            color: #1f2937;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .subtitle-text {
+            font-family: 'Roboto', sans-serif;
+            color: #00695c;
+            font-size: 18px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        .content-area {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            gap: 40px;
+            background-color: #f8fafc;
+            overflow: hidden;
+        }
+        
+        .ref-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .ref-section {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            padding: 20px;
+            border-left: 5px solid #cbd5e1;
+        }
+
+        .ref-section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .ref-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ref-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .ref-icon {
+            margin-top: 3px;
+            color: #64748b;
+            font-size: 14px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .ref-content {
+            flex: 1;
+        }
+
+        .ref-citation {
+            font-size: 13px;
+            color: #1e293b;
+            font-weight: 500;
+            margin-bottom: 2px;
+            line-height: 1.4;
+        }
+
+        .ref-details {
+            font-size: 11px;
+            color: #64748b;
+            line-height: 1.4;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .ref-link {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            color: #00695c;
+            text-decoration: none;
+            display: block;
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 450px;
+        }
+
+        .ref-link:hover {
+            text-decoration: underline;
+            color: #0f766e;
+        }
+
+        /* Section Specific Colors */
+        .section-govt { border-left-color: #00695c; }
+        .section-govt .ref-section-title { color: #004d40; }
+        .section-govt .ref-icon { color: #00695c; }
+
+        .section-data { border-left-color: #0284c7; }
+        .section-data .ref-section-title { color: #0369a1; }
+        .section-data .ref-icon { color: #0284c7; }
+
+        .section-research { border-left-color: #7c3aed; }
+        .section-research .ref-section-title { color: #6d28d9; }
+        .section-research .ref-icon { color: #7c3aed; }
+        
+        .footer-strip {
+            height: 40px;
+            background-color: #fff;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 12px;
+            color: #64748b;
+            flex-shrink: 0;
+        }
+
+        /* Decorative Background Icon */
+        .bg-watermark {
+            position: absolute;
+            bottom: 60px;
+            right: 40px;
+            font-size: 200px;
+            color: #00695c;
+            opacity: 0.03;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .prev-btn {
+    position: fixed;
+    bottom: 30px;
+    width: 56px;
+    height: 56px;
+    background: #00695c;
+    color: white;
+    font-size: 26px;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    transition: transform 0.2s ease, background 0.2s ease;
+    z-index: 99999;
+}
+
+.prev-btn { left: 40px; }
+
+.prev-btn:hover {
+    transform: scale(1.1);
+    background: #004d40;
+}
+    </style>
+</head>
+<body>
+<a href="slide14.html" class="prev-btn">⮜</a>
+<div class="viewport">
+<div class="slide-container">
+<!-- Header -->
+<div class="header-bar">
+<div>
+<h1 class="title-text">References &amp; Data Sources</h1>
+<p class="subtitle-text">Citations, Official Reports, and Digital Platforms</p>
+</div>
+<div class="ml-auto flex items-center gap-3">
+<i class="fas fa-book-reader text-2xl text-teal-700"></i>
+<span class="text-sm font-bold text-gray-500 uppercase tracking-wider">Bibliography</span>
+</div>
+</div>
+<!-- Main Content -->
+<div class="content-area">
+<i class="fas fa-quote-right bg-watermark"></i>
+<!-- Left Column -->
+<div class="ref-column">
+<!-- Government & Official Reports -->
+<div class="ref-section section-govt">
+<h3 class="ref-section-title">
+<i class="fas fa-file-contract"></i> Government &amp; Official Reports
+                    </h3>
+<ul class="ref-list">
+<li class="ref-item">
+<div class="ref-icon"><i class="fas fa-file-pdf"></i></div>
+<div class="ref-content">
+<p class="ref-citation">Maharashtra Pollution Control Board (MPCB). (2024). <em>Annual Report 2023-24</em>.</p>
+<p class="ref-details">Data cited: Air Quality Monitoring (Tables 5.11-5.12), Water Quality Indices, Solid Waste Statistics (Tables 5.54-5.57), Noise Levels.</p>
+<a class="ref-link" href="https://mpcb.gov.in/">https://mpcb.gov.in/sites/default/files/Annual_Report_2023-24.pdf</a>
+</div>
+</li>
+<li class="ref-item">
+<div class="ref-icon"><i class="fas fa-city"></i></div>
+<div class="ref-content">
+<p class="ref-citation">Brihanmumbai Municipal Corporation (BMC). <em>Landfill Management &amp; Solid Waste Department</em>.</p>
+<p class="ref-details">Data cited: Waste generation statistics, Deonar/Kanjurmarg site status, SWM Rules implementation.</p>
+<a class="ref-link" href="https://www.mcgm.gov.in/">https://www.mcgm.gov.in/irj/portal/anonymous/qllandfillMgmt</a>
+</div>
+</li>
+<li class="ref-item">
+<div class="ref-icon"><i class="fas fa-gavel"></i></div>
+<div class="ref-content">
+<p class="ref-citation">Central Pollution Control Board (CPCB). <em>National Ambient Air Quality Standards (NAAQS)</em>.</p>
+<p class="ref-details">Reference standards for PM10, PM2.5, NO2, and SO2 compliance monitoring.</p>
+<a class="ref-link" href="https://cpcb.nic.in/">https://cpcb.nic.in/air-quality-standards/</a>
+</div>
+</li>
+</ul>
+</div>
+<!-- Policy & Planning -->
+<div class="ref-section section-research">
+<h3 class="ref-section-title">
+<i class="fas fa-scroll"></i> Policy &amp; Planning Frameworks
+                    </h3>
+<ul class="ref-list">
+<li class="ref-item">
+<div class="ref-icon"><i class="fas fa-leaf"></i></div>
+<div class="ref-content">
+<p class="ref-citation">Mumbai Climate Action Plan (MCAP). (2022). <em>Towards a Climate Resilient Mumbai</em>.</p>
+<p class="ref-details">Strategies for net-zero 2050, urban flooding, and sustainable waste management.</p>
+<a class="ref-link" href="https://mcap.mcgm.gov.in/">https://mcap.mcgm.gov.in/</a>
+</div>
+</li>
+<li class="ref-item">
+<div class="ref-icon"><i class="fas fa-globe-asia"></i></div>
+<div class="ref-content">
+<p class="ref-citation">World Resources Institute (WRI) India. <em>Clean Air Action Plan</em>.</p>
+<p class="ref-details">Source apportionment methodologies and mitigation strategies for Indian cities.</p>
+<a class="ref-link" href="https://wri-india.org/">https://wri-india.org/initiatives/clean-air-action-plan</a>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<!-- Right Column -->
+<div class="ref-column">
+<!-- Data Platforms & Monitoring -->
+<div class="ref-section section-data">
+<h3 class="ref-section-title">
+<i class="fas fa-chart-line"></i> Data Platforms &amp; Real-time Monitoring
+                    </h3>
+<ul class="ref-list">
+<li class="ref-item">
+<div class="ref-icon"><i class="fas fa-cloud"></i></div>
+<div class="ref-content">
+<p class="ref-citation">AQI.in. <em>Mumbai Historical Air Quality Analysis (2020-2026)</em>.</p>
+<p class="ref-details">Accessed Feb 2026. Data on annual trends, monthly averages, and day/night AQI profiles.</p>
+<a class="ref-link" href="https://www.aqi.in/">https://www.aqi.in/us/dashboard/india/maharashtra/mumbai/historical-analysis</a>
+</div>
+</li>
+<li class="ref-item">
+<div class="ref-icon"><i class="fas fa-satellite"></i></div>
+<div class="ref-content">
+<p class="ref-citation">NASA Earth Observatory. <em>Monitoring Mumbai's Mangroves</em>.</p>
+<p class="ref-details">Satellite imagery analysis of mangrove cover changes and urban encroachment.</p>
+<a class="ref-link" href="https://science.nasa.gov/">https://science.nasa.gov/earth/earth-observatory/monitoring-mumbais-mangroves-91333/</a>
+</div>
+</li>
+</ul>
+</div>
+<!-- Academic & Contextual -->
+<div class="ref-section" style="border-left-color: #64748b;">
+<h3 class="ref-section-title" style="color: #475569;">
+<i class="fas fa-university"></i> Research &amp; Context
+                    </h3>
+<ul class="ref-list">
+<li class="ref-item">
+<div class="ref-icon"><i class="fas fa-graduation-cap"></i></div>
+<div class="ref-content">
+<p class="ref-citation">UChicago &amp; Princeton University. (2025). <em>Impact of Rainfall &amp; Flooding on Mortality in Mumbai</em>.</p>
+<p class="ref-details">Study highlighting the correlation between extreme weather events and public health outcomes.</p>
+</div>
+</li>
+<li class="ref-item">
+<div class="ref-icon"><i class="fab fa-wikipedia-w"></i></div>
+<div class="ref-content">
+<p class="ref-citation">Wikipedia. <em>Mithi River</em>.</p>
+<p class="ref-details">Geographical details, length (18 km), and pollution history context.</p>
+<a class="ref-link" href="https://en.wikipedia.org/wiki/Mithi_River">https://en.wikipedia.org/wiki/Mithi_River</a>
+</div>
+</li>
+<li class="ref-item">
+<div class="ref-icon"><i class="fas fa-umbrella-beach"></i></div>
+<div class="ref-content">
+<p class="ref-citation">Blue Flag Program.</p>
+<p class="ref-details">Certification standards for beaches; context for Maharashtra's certified beaches.</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<div class="footer-strip">
+</div>
+</div>
+</div>
+<script>
+     document.addEventListener("keydown", e => {
+  if (e.key === "ArrowLeft") location.href = "slide14.html";
+});
+</script>
+</body>
+</html>

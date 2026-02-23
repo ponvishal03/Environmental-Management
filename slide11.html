@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Policies &amp; Programs Shaping EQ in Mumbai</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+        .body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', sans-serif;
+        background-color: #f0f4f8;
+        overflow: hidden;
+    }
+
+    .viewport {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f0f4f8;
+    }
+        .slide-container {
+        width: 1280px;
+        height: 720px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        background-color: #ffffff;
+        overflow: hidden;
+        transform-origin: center;
+        transform: scale(min(100vw / 1280, 100vh / 720));
+        box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        border-radius: 12px;
+    }
+        .header-bar {
+            height: 80px;
+            background-color: #ffffff;
+            border-bottom: 4px solid #00695c;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            flex-shrink: 0;
+        }
+        .title-text {
+            font-family: 'Montserrat', sans-serif;
+            color: #1f2937;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .subtitle-text {
+            font-family: 'Roboto', sans-serif;
+            color: #00695c;
+            font-size: 18px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        .content-area {
+            flex: 1;
+            padding: 25px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: #f8fafc;
+            overflow: hidden;
+        }
+        
+        /* Matrix Styling adapted for Policies */
+        .matrix-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+        .matrix-header {
+            display: grid;
+            grid-template-columns: 1.5fr 1.5fr 1.2fr 1fr;
+            gap: 15px;
+            padding: 10px 20px;
+            background-color: #00695c;
+            color: white;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .matrix-row {
+            display: grid;
+            grid-template-columns: 1.5fr 1.5fr 1.2fr 1fr;
+            gap: 15px;
+            padding: 18px 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            align-items: center;
+            border-left: 4px solid transparent;
+            transition: transform 0.2s ease;
+        }
+        .matrix-row:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* Policy Column Styles */
+        .policy-col {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .policy-name {
+            font-weight: 700;
+            font-size: 16px;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .policy-year {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: 700;
+            background-color: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            width: fit-content;
+        }
+        
+        /* Target/Action Columns */
+        .detail-text {
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.4;
+        }
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-right: 4px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+        }
+        .tag-blue { background-color: #e0f2fe; color: #0284c7; }
+        .tag-green { background-color: #dcfce7; color: #16a34a; }
+        .tag-purple { background-color: #f3e8ff; color: #9333ea; }
+        .tag-orange { background-color: #ffedd5; color: #ea580c; }
+        
+        /* Row Colors */
+        .row-mcap { border-left-color: #16a34a; }
+        .row-ncap { border-left-color: #0284c7; }
+        .row-swm { border-left-color: #ea580c; }
+        .row-coastal { border-left-color: #0d9488; }
+        
+        /* Bottom Timeline Area */
+        .timeline-area {
+            height: 120px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px 25px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .timeline-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .timeline-track {
+            position: relative;
+            height: 4px;
+            background-color: #e2e8f0;
+            width: 100%;
+            border-radius: 2px;
+            margin-top: 10px;
+        }
+        .timeline-point {
+            position: absolute;
+            top: -6px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: white;
+            border: 3px solid #64748b;
+            cursor: pointer;
+        }
+        .timeline-point.active {
+            border-color: #00695c;
+            background-color: #00695c;
+        }
+        .timeline-label {
+            position: absolute;
+            top: 15px;
+            transform: translateX(-50%);
+            text-align: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: #475569;
+            width: 100px;
+        }
+        .timeline-year {
+            position: absolute;
+            top: -25px;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        .footer-strip {
+            height: 40px;
+            background-color: #fff;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 12px;
+            color: #64748b;
+            flex-shrink: 0;
+        }
+        .next-btn, .prev-btn {
+    position: fixed;
+    bottom: 30px;
+    width: 56px;
+    height: 56px;
+    background: #00695c;
+    color: white;
+    font-size: 26px;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    transition: transform 0.2s ease, background 0.2s ease;
+    z-index: 99999;
+}
+
+.next-btn { right: 40px; }
+.prev-btn { left: 40px; }
+
+.next-btn:hover, .prev-btn:hover {
+    transform: scale(1.1);
+    background: #004d40;
+}
+    </style>
+</head>
+<body>
+<a href="slide10.html" class="prev-btn">⮜</a>
+<a href="slide12.html" class="next-btn">⮞</a>
+<div class="viewport">
+<div class="slide-container">
+<!-- Header -->
+<div class="header-bar">
+<div>
+<h1 class="title-text">Policies &amp; Programs Shaping EQ in Mumbai</h1>
+<p class="subtitle-text">Strategic Frameworks for Sustainability &amp; Climate Action</p>
+</div>
+<div class="ml-auto flex items-center gap-3">
+<i class="fas fa-file-signature text-2xl text-teal-700"></i>
+<span class="text-sm font-bold text-gray-500 uppercase tracking-wider">Policy Landscape</span>
+</div>
+</div>
+<!-- Main Content -->
+<div class="content-area">
+<!-- Policy Matrix -->
+<div class="matrix-container">
+<div class="matrix-header">
+<div>Policy / Initiative</div>
+<div>Key Objectives &amp; Targets</div>
+<div>Action Areas</div>
+<div>Status / Benchmark</div>
+</div>
+<!-- MCAP Row -->
+<div class="matrix-row row-mcap">
+<div class="policy-col">
+<p class="policy-name"><i class="fas fa-leaf text-green-600"></i>Mumbai Climate Action Plan</p>
+<p class="policy-year">Launched 2022</p>
+</div>
+<div>
+<div class="mb-2">
+<span class="tag tag-green">Net-Zero by 2050</span>
+<span class="tag tag-green">Resilience</span>
+</div>
+<p class="detail-text">First climate action plan for a South Asian city; targets emission reduction &amp; adaptation.</p>
+</div>
+<div>
+<p class="detail-text">• Sustainable Waste Mgmt</p>
+<p class="detail-text">• Urban Greening &amp; Biodiversity</p>
+<p class="detail-text">• Flooding &amp; Water Resources</p>
+</div>
+<div>
+<p class="detail-text font-semibold text-green-700">Implementation Phase</p>
+<p class="detail-text text-xs">Sector-specific cells active</p>
+</div>
+</div>
+<!-- NCAP Row -->
+<div class="matrix-row row-ncap">
+<div class="policy-col">
+<p class="policy-name"><i class="fas fa-wind text-blue-600"></i>National Clean Air Prog.</p>
+<p class="policy-year">City Action Plan</p>
+</div>
+<div>
+<div class="mb-2">
+<span class="tag tag-blue">PM Reduction</span>
+<span class="tag tag-blue">Source Control</span>
+</div>
+<p class="detail-text">Targeting 20-30% reduction in PM concentrations; source apportionment focus.</p>
+</div>
+<div>
+<p class="detail-text">• EV Promotion &amp; Clean Transport</p>
+<p class="detail-text">• Dust Control (Roads/Construction)</p>
+<p class="detail-text">• Industrial Emission Standards</p>
+</div>
+<div>
+<p class="detail-text font-semibold text-blue-700">Ongoing Monitoring</p>
+<p class="detail-text text-xs">CAAQMS network expanded</p>
+</div>
+</div>
+<!-- SWM Rules Row -->
+<div class="matrix-row row-swm">
+<div class="policy-col">
+<p class="policy-name"><i class="fas fa-recycle text-orange-600"></i>SWM Rules &amp; Plastic Ban</p>
+<p class="policy-year">2016 / 2018</p>
+</div>
+<div>
+<div class="mb-2">
+<span class="tag tag-orange">Segregation</span>
+<span class="tag tag-orange">EPR</span>
+</div>
+<p class="detail-text">Mandatory source segregation; ban on single-use plastics; Extended Producer Responsibility.</p>
+</div>
+<div>
+<p class="detail-text">• Wet Waste Composting</p>
+<p class="detail-text">• Dry Waste Recovery Centers</p>
+<p class="detail-text">• Legacy Dumpsite Capping</p>
+</div>
+<div>
+<p class="detail-text font-semibold text-orange-700">Enforcement Focus</p>
+<p class="detail-text text-xs">Penalties for non-compliance</p>
+</div>
+</div>
+<!-- Coastal Row -->
+<div class="matrix-row row-coastal">
+<div class="policy-col">
+<p class="policy-name"><i class="fas fa-water text-teal-600"></i>Coastal &amp; Marine Norms</p>
+<p class="policy-year">CRZ / Blue Flag</p>
+</div>
+<div>
+<div class="mb-2">
+<span class="tag tag-purple">Conservation</span>
+<span class="tag tag-purple">Water Quality</span>
+</div>
+<p class="detail-text">Mangrove protection (buffer zones); Blue Flag certification for beaches (water quality).</p>
+</div>
+<div>
+<p class="detail-text">• Mangrove Cell Surveillance</p>
+<p class="detail-text">• STP Upgradation for Discharge</p>
+<p class="detail-text">• Beach Cleaning Drives</p>
+</div>
+<div>
+<p class="detail-text font-semibold text-teal-700">Active Regulation</p>
+<p class="detail-text text-xs">5 MH beaches Blue Flag cert.</p>
+</div>
+</div>
+</div>
+<!-- Timeline Visualization -->
+<div class="timeline-area">
+<p class="timeline-title"><i class="fas fa-history text-gray-600"></i>Policy Evolution Timeline</p>
+<div class="px-10 relative">
+<div class="timeline-track"></div>
+<!-- Point 1 -->
+<div class="timeline-point" style="left: 10%;"></div>
+<p class="timeline-year" style="left: 10%;">2016</p>
+<p class="timeline-label" style="left: 10%;">SWM Rules<br/>Notified</p>
+<!-- Point 2 -->
+<div class="timeline-point" style="left: 35%;"></div>
+<p class="timeline-year" style="left: 35%;">2018</p>
+<p class="timeline-label" style="left: 35%;">Maharashtra<br/>Plastic Ban</p>
+<!-- Point 3 -->
+<div class="timeline-point" style="left: 60%;"></div>
+<p class="timeline-year" style="left: 60%;">2019</p>
+<p class="timeline-label" style="left: 60%;">NCAP<br/>Launch</p>
+<!-- Point 4 -->
+<div class="timeline-point active" style="left: 85%;"></div>
+<p class="timeline-year" style="left: 85%;">2022</p>
+<p class="timeline-label" style="left: 85%;">Mumbai Climate<br/>Action Plan</p>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<div class="footer-strip">
+<p>Source: MCAP Executive Summary; MoEFCC Notifications; MPCB Reports</p>
+</div>
+</div>
+</div>
+<script>
+     document.addEventListener("keydown", e => {
+  if (e.key === "ArrowLeft") location.href = "slide10.html";
+  if (e.key === "ArrowRight") location.href = "slide12.html";
+});
+</script>
+</body>
+</html>

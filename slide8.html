@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Urban Green &amp; Mangroves: Natural Infrastructure</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+        .body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', sans-serif;
+        background-color: #f0f4f8;
+        overflow: hidden;
+    }
+
+    .viewport {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f0f4f8;
+    }
+        .slide-container {
+        width: 1280px;
+        height: 720px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        background-color: #ffffff;
+        overflow: hidden;
+        transform-origin: center;
+        transform: scale(min(100vw / 1280, 100vh / 720));
+        box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        border-radius: 12px;
+    }
+        .header-bar {
+            height: 80px;
+            background-color: #ffffff;
+            border-bottom: 4px solid #15803d; /* Green-700 */
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            flex-shrink: 0;
+        }
+        .title-text {
+            font-family: 'Montserrat', sans-serif;
+            color: #1f2937;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .subtitle-text {
+            font-family: 'Roboto', sans-serif;
+            color: #15803d;
+            font-size: 18px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        .content-area {
+            flex: 1;
+            display: flex;
+            padding: 30px 40px;
+            gap: 30px;
+            height: calc(720px - 120px); 
+        }
+        .map-column {
+            flex: 0.6;
+            background-color: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .info-column {
+            flex: 0.4;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+        .map-container {
+            flex: 1;
+            width: 100%;
+            z-index: 1;
+        }
+        .map-overlay-legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000;
+            font-size: 12px;
+            border-left: 3px solid #15803d;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .legend-item:last-child {
+            margin-bottom: 0;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            margin-right: 8px;
+            border-radius: 2px;
+        }
+        .info-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #15803d;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .stat-value {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        .stat-label {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .feature-list li {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 14px;
+            color: #334155;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .feature-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #dcfce7;
+            color: #15803d;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 12px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .footer-strip {
+            height: 40px;
+            background-color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 12px;
+            color: #64748b;
+            flex-shrink: 0;
+            border-top: 1px solid #e2e8f0;
+        }
+        /* Custom map markers styling */
+        .leaflet-div-icon {
+            background: transparent;
+            border: none;
+        }
+          .next-btn, .prev-btn {
+    position: fixed;
+    bottom: 30px;
+    width: 56px;
+    height: 56px;
+    background: #00695c;
+    color: white;
+    font-size: 26px;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    transition: transform 0.2s ease, background 0.2s ease;
+    z-index: 99999;
+}
+
+.next-btn { right: 40px; }
+.prev-btn { left: 40px; }
+
+.next-btn:hover, .prev-btn:hover {
+    transform: scale(1.1);
+    background: #004d40;
+}
+    </style>
+</head>
+<body>
+<a href="slide7.html" class="prev-btn">⮜</a>
+<a href="slide9.html" class="next-btn">⮞</a>
+<div class="viewport">
+<div class="slide-container">
+<!-- Header -->
+<div class="header-bar">
+<div>
+<h1 class="title-text">Urban Green &amp; Mangroves: Natural Infrastructure</h1>
+<p class="subtitle-text">Distribution, Ecological Benefits &amp; Conservation Status</p>
+</div>
+<div class="ml-auto flex items-center gap-3">
+<div class="bg-green-100 p-2 rounded-full">
+<i class="fas fa-tree text-2xl text-green-700"></i>
+</div>
+<span class="text-sm font-bold text-gray-500 uppercase tracking-wider">Green Cover</span>
+</div>
+</div>
+<!-- Main Content -->
+<div class="content-area">
+<!-- Left Column: Map Visualization -->
+<div class="map-column shadow-md">
+<div class="absolute top-4 left-4 z-10 bg-white/95 px-3 py-2 rounded shadow-md border-l-4 border-green-600">
+<p class="text-xs font-bold text-gray-700 uppercase m-0">Mangrove Cover Analysis</p>
+<p class="text-xs text-gray-500 m-0">Based on NASA/ISRO Data</p>
+</div>
+<div class="map-container" id="mangroveMap"></div>
+<div class="map-overlay-legend">
+<div class="legend-item">
+<div class="legend-color" style="background-color: #15803d;"></div>
+<span>Dense Mangroves</span>
+</div>
+<div class="legend-item">
+<div class="legend-color" style="background-color: #86efac;"></div>
+<span>Sparse / Degraded</span>
+</div>
+<div class="legend-item">
+<div class="legend-color" style="background-color: #ef4444; border-radius: 50%;"></div>
+<span>Pressure Hotspots</span>
+</div>
+<div class="legend-item">
+<div class="legend-color" style="background-color: #3b82f6;"></div>
+<span>Protected Areas (TFC)</span>
+</div>
+</div>
+</div>
+<!-- Right Column: Info & Stats -->
+<div class="info-column">
+<!-- Status Card -->
+<div class="info-card">
+<div class="flex items-center mb-3">
+<i class="fas fa-chart-pie text-green-600 mr-2"></i>
+<h3 class="text-lg font-bold text-gray-800 m-0">Current Status (2024-25)</h3>
+</div>
+<div class="stat-grid">
+<div class="stat-item">
+<span class="stat-value text-green-700">~5,900 ha</span>
+<span class="stat-label">Total Mangrove Area</span>
+</div>
+<div class="stat-item">
+<span class="stat-value text-blue-600">~20%</span>
+<span class="stat-label">Increase since 2005</span>
+</div>
+</div>
+<p class="text-xs text-gray-500 mt-3 italic leading-tight">
+                        *Source: Forest Survey of India / NASA Earth Observatory. Growth attributed to protection post-2005 floods.
+                    </p>
+</div>
+<!-- Ecological Services Card -->
+<div class="info-card" style="border-left-color: #0ea5e9;">
+<div class="flex items-center mb-3">
+<i class="fas fa-shield-alt text-blue-500 mr-2"></i>
+<h3 class="text-lg font-bold text-gray-800 m-0">Co-Benefits &amp; Services</h3>
+</div>
+<ul class="feature-list">
+<li>
+<div class="feature-icon"><i class="fas fa-water"></i></div>
+<span><strong>Flood Defense:</strong> Acts as a natural sponge, absorbing tidal surges and excess monsoon runoff.</span>
+</li>
+<li>
+<div class="feature-icon"><i class="fas fa-cloud"></i></div>
+<span><strong>Carbon Sink:</strong> Sequesters carbon at 4x the rate of terrestrial forests (Blue Carbon).</span>
+</li>
+<li>
+<div class="feature-icon"><i class="fas fa-fish"></i></div>
+<span><strong>Biodiversity:</strong> Nursery for fisheries; habitat for flamingos (Thane Creek Sanctuary).</span>
+</li>
+</ul>
+</div>
+<!-- Pressures & Challenges -->
+<div class="info-card" style="border-left-color: #f59e0b;">
+<div class="flex items-center mb-3">
+<i class="fas fa-exclamation-triangle text-amber-500 mr-2"></i>
+<h3 class="text-lg font-bold text-gray-800 m-0">Pressures &amp; Threats</h3>
+</div>
+<ul class="feature-list">
+<li>
+<div class="feature-icon bg-amber-100 text-amber-600"><i class="fas fa-hard-hat"></i></div>
+<span><strong>Infrastructure:</strong> Coastal Road, Bullet Train, and urban expansion impacting fringe areas.</span>
+</li>
+<li>
+<div class="feature-icon bg-amber-100 text-amber-600"><i class="fas fa-trash"></i></div>
+<span><strong>Pollution:</strong> Plastic choking (non-biodegradable waste) and untreated sewage discharge.</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<div class="footer-strip">
+<p>Data Sources: NASA Science (Monitoring Mumbai's Mangroves), State Mangrove Cell, CRZ Notification 2019.</p>
+</div>
+</div>
+</div>
+<script>
+  // Init map
+  var map = L.map('mangroveMap', {
+    zoomControl: false,
+    attributionControl: false
+  }).setView([19.12, 72.90], 11);
+
+  // Basemap
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19
+  }).addTo(map);
+
+  // Loader helper
+  function loadGeoJSON(url, styleFn, pointToLayerFn) {
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        L.geoJSON(data, {
+          style: styleFn,
+          pointToLayer: pointToLayerFn
+        }).addTo(map);
+      })
+      .catch(err => console.error("Failed to load", url, err));
+  }
+
+  // 1. Thane Creek (Dense Mangroves)
+  loadGeoJSON("thanecreek.geojson", {
+    color: "transparent",
+    fillColor: "#15803d",
+    fillOpacity: 0.7
+  });
+
+  // 2. Gorai / Manori (Mixed Density)
+  loadGeoJSON("gorai.geojson", {
+    color: "transparent",
+    fillColor: "#86efac",
+    fillOpacity: 0.6
+  });
+
+  // 3. Mahim / Bandra (Stressed Areas)
+  loadGeoJSON("mahim.geojson", {
+    color: "transparent",
+    fillColor: "#86efac",
+    fillOpacity: 0.7
+  });
+
+  // 4. Sewri Mudflats (Dense Mangroves)
+  loadGeoJSON("sewri.geojson", {
+    color: "transparent",
+    fillColor: "#15803d",
+    fillOpacity: 0.7
+  });
+
+  // 5. Hotspots (Pressure Points) – Points
+  loadGeoJSON("hotspots.geojson", null, function (feature, latlng) {
+    return L.circleMarker(latlng, {
+      radius: 6,
+      fillColor: "#ef4444",
+      color: "#ffffff",
+      weight: 1,
+      opacity: 1,
+      fillOpacity: 0.9
+    });
+  });
+
+  // 6. Protected Area Marker – Airoli
+  loadGeoJSON("airoli.geojson", null, function (feature, latlng) {
+    return L.circleMarker(latlng, {
+      radius: 8,
+      fillColor: "#3b82f6",
+      color: "#ffffff",
+      weight: 2,
+      opacity: 1,
+      fillOpacity: 0.9
+    });
+  });
+
+  // Keyboard navigation
+  document.addEventListener("keydown", e => {
+    if (e.key === "ArrowLeft") location.href = "slide7.html";
+    if (e.key === "ArrowRight") location.href = "slide9.html";
+  });
+</script>
+</body>
+</html>

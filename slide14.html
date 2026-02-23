@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Conclusions &amp; Strategic Priorities</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+        .body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', sans-serif;
+        background-color: #f0f4f8;
+        overflow: hidden;
+    }
+
+    .viewport {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f0f4f8;
+    }
+        .slide-container {
+        width: 1280px;
+        height: 720px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        background-color: #ffffff;
+        overflow: hidden;
+        transform-origin: center;
+        transform: scale(min(100vw / 1280, 100vh / 720));
+        box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        border-radius: 12px;
+    }
+        .header-bar {
+            height: 80px;
+            background-color: #ffffff;
+            border-bottom: 4px solid #1a237e; /* Deep Indigo for strategic/conclusion theme */
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            flex-shrink: 0;
+        }
+        .title-text {
+            font-family: 'Montserrat', sans-serif;
+            color: #1f2937;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .subtitle-text {
+            font-family: 'Roboto', sans-serif;
+            color: #1a237e;
+            font-size: 18px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        .content-area {
+            flex: 1;
+            padding: 30px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: #f8fafc;
+            overflow: hidden;
+        }
+        
+        .solutions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 columns for top row */
+            grid-template-rows: auto auto; /* 2 rows */
+            gap: 20px;
+            height: 440px; /* Adjusted height */
+        }
+
+        /* Span logic for layout variety */
+        .grid-span-2 {
+            grid-column: span 2;
+        }
+        
+        .solution-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            border-top: 5px solid transparent;
+            transition: transform 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .solution-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        
+        .card-icon-bg {
+            position: absolute;
+            bottom: -10px;
+            right: -10px;
+            font-size: 80px;
+            opacity: 0.05;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 12px;
+        }
+        
+        .card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        
+        .card-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            color: #1f2937;
+            line-height: 1.2;
+        }
+        
+        .card-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-y: auto;
+        }
+        
+        .action-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .action-item {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: #4b5563;
+            line-height: 1.3;
+        }
+        
+        .action-bullet {
+            font-size: 10px;
+            margin-top: 5px;
+        }
+        
+        .kpi-tag {
+            margin-top: 10px;
+            background-color: #f1f5f9;
+            border-radius: 6px;
+            padding: 8px 12px;
+            border-left: 3px solid #64748b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .kpi-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        
+        .kpi-value {
+            font-size: 12px;
+            color: #1f2937;
+            font-weight: 600;
+        }
+        
+        /* Card Colors */
+        .card-health { border-top-color: #d32f2f; } /* Red for Health Priority */
+        .card-health .card-icon { background-color: #d32f2f; }
+        .card-health .action-bullet { color: #d32f2f; }
+        .card-health .kpi-tag { border-left-color: #d32f2f; background-color: #fef2f2; }
+        .card-health .kpi-label { color: #d32f2f; }
+        
+        .card-water { border-top-color: #0288d1; } /* Blue for Water */
+        .card-water .card-icon { background-color: #0288d1; }
+        .card-water .action-bullet { color: #0288d1; }
+        .card-water .kpi-tag { border-left-color: #0288d1; background-color: #e1f5fe; }
+        .card-water .kpi-label { color: #0288d1; }
+        
+        .card-waste { border-top-color: #fbc02d; } /* Yellow/Orange for Waste */
+        .card-waste .card-icon { background-color: #fbc02d; }
+        .card-waste .action-bullet { color: #f9a825; }
+        .card-waste .kpi-tag { border-left-color: #fbc02d; background-color: #fffde7; }
+        .card-waste .kpi-label { color: #f9a825; }
+        
+        .card-mangrove { border-top-color: #388e3c; } /* Green for Nature */
+        .card-mangrove .card-icon { background-color: #388e3c; }
+        .card-mangrove .action-bullet { color: #388e3c; }
+        .card-mangrove .kpi-tag { border-left-color: #388e3c; background-color: #e8f5e9; }
+        .card-mangrove .kpi-label { color: #388e3c; }
+        
+        .card-data { border-top-color: #7b1fa2; } /* Purple for Data/Gov */
+        .card-data .card-icon { background-color: #7b1fa2; }
+        .card-data .action-bullet { color: #7b1fa2; }
+        .card-data .kpi-tag { border-left-color: #7b1fa2; background-color: #f3e5f5; }
+        .card-data .kpi-label { color: #7b1fa2; }
+
+        .bottom-priority-bar {
+            background-color: #1a237e;
+            color: white;
+            border-radius: 12px;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex: 1;
+            margin-top: 5px;
+        }
+        
+        .priority-header {
+            width: 20%;
+            border-right: 1px solid rgba(255,255,255,0.2);
+            padding-right: 20px;
+        }
+        
+        .priority-steps {
+            flex: 1;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-left: 20px;
+        }
+        
+        .step-item {
+            text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .step-icon {
+            width: 32px;
+            height: 32px;
+            background-color: rgba(255,255,255,0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        
+        .step-text {
+            font-size: 11px;
+            font-weight: 500;
+            color: #e8eaf6;
+        }
+
+        .step-subtext {
+             font-size: 9px;
+             color: rgba(255,255,255,0.6);
+             margin-top: 2px;
+        }
+        
+        .step-arrow {
+            color: rgba(255,255,255,0.3);
+            font-size: 12px;
+        }
+        
+        .footer-strip {
+            height: 40px;
+            background-color: #fff;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 12px;
+            color: #64748b;
+            flex-shrink: 0;
+        }
+        .next-btn, .prev-btn {
+    position: fixed;
+    bottom: 30px;
+    width: 56px;
+    height: 56px;
+    background: #00695c;
+    color: white;
+    font-size: 26px;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    transition: transform 0.2s ease, background 0.2s ease;
+    z-index: 99999;
+}
+
+.next-btn { right: 40px; }
+.prev-btn { left: 40px; }
+
+.next-btn:hover, .prev-btn:hover {
+    transform: scale(1.1);
+    background: #004d40;
+}
+    </style>
+</head>
+<body>
+<a href="slide13.html" class="prev-btn">⮜</a>
+<a href="slide15.html" class="next-btn">⮞</a>
+<div class="viewport">
+<div class="slide-container">
+<!-- Header -->
+<div class="header-bar">
+<div>
+<h1 class="title-text">Conclusions &amp; Strategic Priorities (2026–2030)</h1>
+<p class="subtitle-text">Roadmap for a Sustainable &amp; Resilient Mumbai</p>
+</div>
+<div class="ml-auto flex items-center gap-3">
+<i class="fas fa-flag-checkered text-2xl text-indigo-900"></i>
+<span class="text-sm font-bold text-gray-500 uppercase tracking-wider">Vision 2030</span>
+</div>
+</div>
+<!-- Main Content -->
+<div class="content-area">
+<!-- Strategic Priorities Grid -->
+<div class="solutions-grid">
+<!-- 1. Health-First Air Strategy (Priority High) -->
+<div class="solution-card card-health">
+<i class="fas fa-lungs card-icon-bg"></i>
+<div class="card-header">
+<div class="card-icon"><i class="fas fa-heartbeat"></i></div>
+<h3 class="card-title">Health-First Air Strategy</h3>
+</div>
+<div class="card-body">
+<ul class="action-list">
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Strict enforcement of construction dust mitigation norms (enclosures/sprinklers).</span></li>
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Accelerate transition to electric public transport (BEST) &amp; curb DG set usage.</span></li>
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Implement Low Emission Zones (LEZ) in congested corridors.</span></li>
+</ul>
+<div class="kpi-tag">
+<span class="kpi-label">Target KPI</span>
+<span class="kpi-value">&gt;85% Days meeting NAAQS limits</span>
+</div>
+</div>
+</div>
+<!-- 2. Sewage-Stormwater Interface -->
+<div class="solution-card card-water">
+<i class="fas fa-tint card-icon-bg"></i>
+<div class="card-header">
+<div class="card-icon"><i class="fas fa-water"></i></div>
+<h3 class="card-title">Fix Sewage-Stormwater Nexus</h3>
+</div>
+<div class="card-body">
+<ul class="action-list">
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Eliminate illegal sewage outfalls into Mithi River &amp; creeks; 100% diversion to STPs.</span></li>
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Upgrade STP capacity &amp; treatment quality to tertiary standards for reuse.</span></li>
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Install trash booms at nullah mouths to prevent marine litter.</span></li>
+</ul>
+<div class="kpi-tag">
+<span class="kpi-label">Target KPI</span>
+<span class="kpi-value">100% Sewage Treated (No dry-weather flow in drains)</span>
+</div>
+</div>
+</div>
+<!-- 3. Close MSW Gap -->
+<div class="solution-card card-waste">
+<i class="fas fa-trash-restore card-icon-bg"></i>
+<div class="card-header">
+<div class="card-icon"><i class="fas fa-recycle"></i></div>
+<h3 class="card-title">Close MSW Treatment Gap</h3>
+</div>
+<div class="card-body">
+<ul class="action-list">
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Scale decentralized wet-waste processing (biomethanation/composting) in wards.</span></li>
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Establish robust Construction &amp; Demolition (C&amp;D) waste recovery chain.</span></li>
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Complete scientific closure of Mulund &amp; Deonar legacy dumps.</span></li>
+</ul>
+<div class="kpi-tag">
+<span class="kpi-label">Target KPI</span>
+<span class="kpi-value">&gt;90% Waste Segregation at Source</span>
+</div>
+</div>
+</div>
+<!-- 4. Mangrove & Green Cover (Span 1) -->
+<div class="solution-card card-mangrove">
+<i class="fas fa-tree card-icon-bg"></i>
+<div class="card-header">
+<div class="card-icon"><i class="fas fa-seedling"></i></div>
+<h3 class="card-title">Protect &amp; Restore Green Assets</h3>
+</div>
+<div class="card-body">
+<ul class="action-list">
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Strict Coastal Regulation Zone (CRZ) enforcement &amp; removal of encroachments.</span></li>
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Mangrove restoration targets with satellite monitoring.</span></li>
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Develop urban forests/sponge parks for flood resilience.</span></li>
+</ul>
+<div class="kpi-tag">
+<span class="kpi-label">Target KPI</span>
+<span class="kpi-value">+500 ha Mangrove/Green Cover Restored</span>
+</div>
+</div>
+</div>
+<!-- 5. Data-Driven Governance (Span 2 for emphasis) -->
+<div class="solution-card card-data grid-span-2">
+<i class="fas fa-chart-network card-icon-bg"></i>
+<div class="card-header">
+<div class="card-icon"><i class="fas fa-database"></i></div>
+<h3 class="card-title">Data-Driven Governance &amp; Transparency</h3>
+</div>
+<div class="card-body" style="flex-direction: row; gap: 20px;">
+<div style="flex: 1;">
+<ul class="action-list">
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Publish open, real-time dashboards for Air, Water, and Noise quality.</span></li>
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Conduct periodic scientific source apportionment studies (every 3 years).</span></li>
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Integrate early warning systems for air quality &amp; flood risks.</span></li>
+</ul>
+</div>
+<div style="flex: 1; border-left: 1px solid #e5e7eb; padding-left: 20px; display: flex; flex-direction: column; justify-content: center;">
+<p class="text-xs text-gray-500 mb-2 font-medium">Monitoring Infrastructure Targets:</p>
+<div class="kpi-tag" style="margin-top: 0;">
+<span class="kpi-label">Target KPI</span>
+<span class="kpi-value">1 Monitor per 1M Residents (Air &amp; Noise)</span>
+</div>
+<div class="kpi-tag" style="margin-top: 8px;">
+<span class="kpi-label">Target KPI</span>
+<span class="kpi-value">Real-time Public Data Availability</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Strategic Priority Roadmap -->
+<div class="bottom-priority-bar">
+<div class="priority-header">
+<p class="text-xs uppercase tracking-widest text-indigo-200 font-bold mb-1">Strategic Framework</p>
+<p class="text-xl font-bold font-montserrat">Action Plan 2030</p>
+</div>
+<div class="priority-steps">
+<div class="step-item">
+<div class="step-icon"><i class="fas fa-shield-alt"></i></div>
+<p class="step-text">Mitigate Risks</p>
+<p class="step-subtext">Floods &amp; Pollution</p>
+</div>
+<i class="fas fa-chevron-right step-arrow"></i>
+<div class="step-item">
+<div class="step-icon"><i class="fas fa-tools"></i></div>
+<p class="step-text">Build Infrastructure</p>
+<p class="step-subtext">STPs, Transit, Sensors</p>
+</div>
+<i class="fas fa-chevron-right step-arrow"></i>
+<div class="step-item">
+<div class="step-icon"><i class="fas fa-leaf"></i></div>
+<p class="step-text">Restore Ecology</p>
+<p class="step-subtext">Rivers &amp; Mangroves</p>
+</div>
+<i class="fas fa-chevron-right step-arrow"></i>
+<div class="step-item">
+<div class="step-icon"><i class="fas fa-check-double"></i></div>
+<p class="step-text">Ensure Compliance</p>
+<p class="step-subtext">Data &amp; Enforcement</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<div class="footer-strip">
+<p>Source: Mumbai Climate Action Plan (MCAP); MPCB Strategic Vision</p>
+</div>
+</div>
+</div>
+<script>
+     document.addEventListener("keydown", e => {
+  if (e.key === "ArrowLeft") location.href = "slide13.html";
+  if (e.key === "ArrowRight") location.href = "slide15.html";
+});
+</script>
+</body>
+</html>

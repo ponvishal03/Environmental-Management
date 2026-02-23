@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Best Practices &amp; Solutions</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+        .body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', sans-serif;
+        background-color: #f0f4f8;
+        overflow: hidden;
+    }
+
+    .viewport {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f0f4f8;
+    }
+        .slide-container {
+        width: 1280px;
+        height: 720px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        background-color: #ffffff;
+        overflow: hidden;
+        transform-origin: center;
+        transform: scale(min(100vw / 1280, 100vh / 720));
+        box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        border-radius: 12px;
+    }
+        .header-bar {
+            height: 80px;
+            background-color: #ffffff;
+            border-bottom: 4px solid #00695c;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            flex-shrink: 0;
+        }
+        .title-text {
+            font-family: 'Montserrat', sans-serif;
+            color: #1f2937;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .subtitle-text {
+            font-family: 'Roboto', sans-serif;
+            color: #00695c;
+            font-size: 18px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        .content-area {
+            flex: 1;
+            padding: 30px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: #f8fafc;
+            overflow: hidden;
+        }
+        
+        .solutions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            height: 400px;
+        }
+        
+        .solution-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            border-top: 5px solid transparent;
+            transition: transform 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .solution-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        
+        .card-icon-bg {
+            position: absolute;
+            bottom: -10px;
+            right: -10px;
+            font-size: 80px;
+            opacity: 0.05;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 12px;
+        }
+        
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .card-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            color: #1f2937;
+            line-height: 1.2;
+        }
+        
+        .card-body {
+            flex: 1;
+        }
+        
+        .action-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .action-item {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #4b5563;
+            line-height: 1.4;
+        }
+        
+        .action-bullet {
+            color: #00695c;
+            font-size: 10px;
+            margin-top: 5px;
+        }
+        
+        .pilot-tag {
+            margin-top: auto;
+            background-color: #f1f5f9;
+            border-radius: 6px;
+            padding: 8px 12px;
+            border-left: 3px solid #64748b;
+        }
+        
+        .pilot-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #64748b;
+            font-weight: 700;
+            margin-bottom: 2px;
+            display: block;
+        }
+        
+        .pilot-text {
+            font-size: 11px;
+            color: #334155;
+            font-weight: 500;
+            display: block;
+        }
+        
+        /* Card Colors */
+        .card-smart { border-top-color: #3b82f6; }
+        .card-smart .card-icon { background-color: #3b82f6; }
+        .card-smart .pilot-tag { border-left-color: #3b82f6; background-color: #eff6ff; }
+        .card-smart .pilot-label { color: #3b82f6; }
+        
+        .card-community { border-top-color: #8b5cf6; }
+        .card-community .card-icon { background-color: #8b5cf6; }
+        .card-community .pilot-tag { border-left-color: #8b5cf6; background-color: #f5f3ff; }
+        .card-community .pilot-label { color: #8b5cf6; }
+        
+        .card-mobility { border-top-color: #f59e0b; }
+        .card-mobility .card-icon { background-color: #f59e0b; }
+        .card-mobility .pilot-tag { border-left-color: #f59e0b; background-color: #fffbeb; }
+        .card-mobility .pilot-label { color: #f59e0b; }
+        
+        .card-dust { border-top-color: #ef4444; }
+        .card-dust .card-icon { background-color: #ef4444; }
+        .card-dust .pilot-tag { border-left-color: #ef4444; background-color: #fef2f2; }
+        .card-dust .pilot-label { color: #ef4444; }
+        
+        .card-circular { border-top-color: #10b981; }
+        .card-circular .card-icon { background-color: #10b981; }
+        .card-circular .pilot-tag { border-left-color: #10b981; background-color: #ecfdf5; }
+        .card-circular .pilot-label { color: #10b981; }
+        
+        .card-green { border-top-color: #06b6d4; }
+        .card-green .card-icon { background-color: #06b6d4; }
+        .card-green .pilot-tag { border-left-color: #06b6d4; background-color: #ecfeff; }
+        .card-green .pilot-label { color: #06b6d4; }
+        
+        .bottom-priority-bar {
+            background-color: #004d40;
+            color: white;
+            border-radius: 12px;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .priority-header {
+            width: 25%;
+            border-right: 1px solid rgba(255,255,255,0.2);
+            padding-right: 20px;
+        }
+        
+        .priority-steps {
+            flex: 1;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-left: 20px;
+        }
+        
+        .step-item {
+            text-align: center;
+            position: relative;
+        }
+        
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-size: 16px;
+        }
+        
+        .step-text {
+            font-size: 12px;
+            font-weight: 500;
+            color: #ccfbf1;
+        }
+        
+        .step-arrow {
+            color: rgba(255,255,255,0.3);
+            font-size: 14px;
+        }
+        
+        .footer-strip {
+            height: 40px;
+            background-color: #fff;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 12px;
+            color: #64748b;
+            flex-shrink: 0;
+        }
+        .next-btn, .prev-btn {
+    position: fixed;
+    bottom: 30px;
+    width: 56px;
+    height: 56px;
+    background: #00695c;
+    color: white;
+    font-size: 26px;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    transition: transform 0.2s ease, background 0.2s ease;
+    z-index: 99999;
+}
+
+.next-btn { right: 40px; }
+.prev-btn { left: 40px; }
+
+.next-btn:hover, .prev-btn:hover {
+    transform: scale(1.1);
+    background: #004d40;
+}
+    </style>
+</head>
+<body>
+<a href="slide12.html" class="prev-btn">⮜</a>
+<a href="slide14.html" class="next-btn">⮞</a>
+<div class="viewport">
+<div class="slide-container">
+<!-- Header -->
+<div class="header-bar">
+<div>
+<h1 class="title-text">Best Practices &amp; Solutions for Mumbai</h1>
+<p class="subtitle-text">Innovative Approaches &amp; Strategic Interventions</p>
+</div>
+<div class="ml-auto flex items-center gap-3">
+<i class="fas fa-lightbulb text-2xl text-teal-700"></i>
+<span class="text-sm font-bold text-gray-500 uppercase tracking-wider">Strategic Priorities</span>
+</div>
+</div>
+<!-- Main Content -->
+<div class="content-area">
+<!-- Solutions Grid (Top Row) -->
+<div class="solutions-grid mb-4">
+<!-- 1. Smart Monitoring -->
+<div class="solution-card card-smart">
+<i class="fas fa-satellite-dish card-icon-bg"></i>
+<div class="card-header">
+<div class="card-icon"><i class="fas fa-microchip"></i></div>
+<h3 class="card-title">Smart Monitoring &amp; Data</h3>
+</div>
+<div class="card-body">
+<ul class="action-list">
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Expand CAAQMS network</span></li>
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Integrated environmental data platform for analytics</span></li>
+</ul>
+</div>
+<div class="pilot-tag">
+<span class="pilot-label">Pilot Example</span>
+<span class="pilot-text">IoT-based flood sensors in Mithi River basin</span>
+</div>
+</div>
+<!-- 2. Community Participation -->
+<div class="solution-card card-community">
+<i class="fas fa-users card-icon-bg"></i>
+<div class="card-header">
+<div class="card-icon"><i class="fas fa-hands-helping"></i></div>
+<h3 class="card-title">Community Participation</h3>
+</div>
+<div class="card-body">
+<ul class="action-list">
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Ward-level waste segregation campaigns</span></li>
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Citizen science programs for creek monitoring</span></li>
+</ul>
+</div>
+<div class="pilot-tag">
+<span class="pilot-label">Pilot Example</span>
+<span class="pilot-text">"Clean Creek" citizen watch groups in Versova</span>
+</div>
+</div>
+<!-- 3. Clean Mobility -->
+<div class="solution-card card-mobility">
+<i class="fas fa-bus card-icon-bg"></i>
+<div class="card-header">
+<div class="card-icon"><i class="fas fa-bolt"></i></div>
+<h3 class="card-title">Clean Mobility Strategy</h3>
+</div>
+<div class="card-body">
+<ul class="action-list">
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Accelerated electrification of BEST bus fleet</span></li>
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Last-mile NMT (Non-Motorized Transport) connectivity</span></li>
+</ul>
+</div>
+<div class="pilot-tag">
+<span class="pilot-label">Pilot Example</span>
+<span class="pilot-text">E-bus corridors &amp; public EV charging hubs</span>
+</div>
+</div>
+<!-- Solutions Grid (Bottom Row) -->
+<!-- 4. Dust Control -->
+<div class="solution-card card-dust">
+<i class="fas fa-hard-hat card-icon-bg"></i>
+<div class="card-header">
+<div class="card-icon"><i class="fas fa-wind"></i></div>
+<h3 class="card-title">Dust &amp; Construction Control</h3>
+</div>
+<div class="card-body">
+<ul class="action-list">
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Mandatory on-site enclosures &amp; wheel washing</span></li>
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Real-time dust monitoring at major sites</span></li>
+</ul>
+</div>
+<div class="pilot-tag">
+<span class="pilot-label">Pilot Example</span>
+<span class="pilot-text">Anti-smog guns deployment at metro sites</span>
+</div>
+</div>
+<!-- 5. Circular Economy -->
+<div class="solution-card card-circular">
+<i class="fas fa-recycle card-icon-bg"></i>
+<div class="card-header">
+<div class="card-icon"><i class="fas fa-sync-alt"></i></div>
+<h3 class="card-title">Circular Economy Models</h3>
+</div>
+<div class="card-body">
+<ul class="action-list">
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Decentralized wet waste composting units</span></li>
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Material Recovery Facilities (MRFs) for plastics</span></li>
+</ul>
+</div>
+<div class="pilot-tag">
+<span class="pilot-label">Pilot Example</span>
+<span class="pilot-text">Zero-waste ward initiatives in K-West</span>
+</div>
+</div>
+<!-- 6. Blue-Green Infra -->
+<div class="solution-card card-green">
+<i class="fas fa-water card-icon-bg"></i>
+<div class="card-header">
+<div class="card-icon"><i class="fas fa-leaf"></i></div>
+<h3 class="card-title">Blue-Green Infrastructure</h3>
+</div>
+<div class="card-body">
+<ul class="action-list">
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Mangrove restoration &amp; sponge city retrofits</span></li>
+<li class="action-item"><i class="fas fa-circle action-bullet"></i><span>Stormwater outfall gates with pumping stations</span></li>
+</ul>
+</div>
+<div class="pilot-tag">
+<span class="pilot-label">Pilot Example</span>
+<span class="pilot-text">Miyawaki urban forests in open spaces</span>
+</div>
+</div>
+</div>
+<!-- Strategic Priority Roadmap -->
+<div class="bottom-priority-bar">
+<div class="priority-header">
+<p class="text-xs uppercase tracking-widest text-teal-200 font-bold mb-1">Implementation Roadmap</p>
+<p class="text-xl font-bold font-montserrat">Path to 2030</p>
+</div>
+<div class="priority-steps">
+<div class="step-item">
+<div class="step-icon"><i class="fas fa-search-location"></i></div>
+<p class="step-text">Source Apportionment</p>
+</div>
+<i class="fas fa-chevron-right step-arrow"></i>
+<div class="step-item">
+<div class="step-icon"><i class="fas fa-cogs"></i></div>
+<p class="step-text">Technology Integration</p>
+</div>
+<i class="fas fa-chevron-right step-arrow"></i>
+<div class="step-item">
+<div class="step-icon"><i class="fas fa-users-cog"></i></div>
+<p class="step-text">Capacity Building</p>
+</div>
+<i class="fas fa-chevron-right step-arrow"></i>
+<div class="step-item">
+<div class="step-icon"><i class="fas fa-check-circle"></i></div>
+<p class="step-text">Enforcement &amp; Compliance</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<div class="footer-strip">
+<p>Source: Mumbai Climate Action Plan (MCAP); MPCB Annual Report 2023-24</p>
+</div>
+</div>
+</div>
+<script>
+     document.addEventListener("keydown", e => {
+  if (e.key === "ArrowLeft") location.href = "slide12.html";
+  if (e.key === "ArrowRight") location.href = "slide14.html";
+});
+</script>
+</body>
+</html>

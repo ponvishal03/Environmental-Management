@@ -1,0 +1,24 @@
+{
+  "type": "FeatureCollection",
+  "generator": "overpass-turbo",
+  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+  "timestamp": "2026-02-21T14:29:42Z",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10800031393",
+        "name": "Coastal & Marine Biodiversity Centre Ticket Counter",
+        "shop": "ticket"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.9865175,
+          19.1488904
+        ]
+      },
+      "id": "node/10800031393"
+    }
+  ]
+}

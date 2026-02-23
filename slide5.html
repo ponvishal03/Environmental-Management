@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Air Quality Trends (2020-2026)</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+         body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', sans-serif;
+        background-color: #f0f4f8;
+        overflow: hidden;
+    }
+
+    .viewport {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f0f4f8;
+    }
+        .slide-container {
+        width: 1280px;
+        height: 720px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        background-color: #ffffff;
+        overflow: hidden;
+        transform-origin: center;
+        transform: scale(min(100vw / 1280, 100vh / 720));
+        box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        border-radius: 12px;
+    }
+        .header-bar {
+            height: 80px;
+            background-color: #ffffff;
+            border-bottom: 4px solid #00695c;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            flex-shrink: 0;
+        }
+        .title-text {
+            font-family: 'Montserrat', sans-serif;
+            color: #1f2937;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .subtitle-text {
+            font-family: 'Roboto', sans-serif;
+            color: #00695c;
+            font-size: 18px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        .content-area {
+            flex: 1;
+            padding: 30px 40px;
+            display: flex;
+            gap: 30px;
+            background-color: #f8fafc;
+            overflow: hidden;
+        }
+        .main-chart-col {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .side-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .chart-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .chart-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #334155;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .chart-wrapper {
+            flex: 1;
+            position: relative;
+            min-height: 0;
+        }
+        .stat-box {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 4px solid #ef4444;
+        }
+        .stat-time {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 4px solid #5544ef;
+        }
+        .stat-watch {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 4px solid #dbef44;
+        }
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1f2937;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        .insight-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .insight-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.5;
+            padding: 10px;
+            background-color: #f1f5f9;
+            border-radius: 8px;
+        }
+        .insight-icon {
+            color: #00695c;
+            font-size: 16px;
+            margin-top: 2px;
+        }
+        .station-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .station-item {
+            font-size: 12px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .station-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #cbd5e1;
+        }
+        .station-dot.active {
+            background-color: #22c55e;
+        }
+        .footer-strip {
+            height: 40px;
+            background-color: #fff;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 12px;
+            color: #64748b;
+            flex-shrink: 0;
+        }
+        .side-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;      /* enable scrolling */
+    padding-right: 6px;   /* room for scrollbar */
+}
+
+        .next-btn, .prev-btn {
+    position: fixed;
+    bottom: 30px;
+    width: 56px;
+    height: 56px;
+    background: #00695c;
+    color: white;
+    font-size: 26px;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    transition: transform 0.2s ease, background 0.2s ease;
+    z-index: 99999;
+}
+
+.next-btn { right: 40px; }
+.prev-btn { left: 40px; }
+
+.next-btn:hover, .prev-btn:hover {
+    transform: scale(1.1);
+    background: #004d40;
+}
+    </style>
+</head>
+<body>
+<a href="slide4.html" class="prev-btn">⮜</a>
+<a href="slide6.html" class="next-btn">⮞</a>
+<div class="viewport">
+<div class="slide-container">
+<!-- Header -->
+<div class="header-bar">
+<div>
+<h1 class="title-text">Air Quality: Trends and Seasonality (2020–2026)</h1>
+<p class="subtitle-text">Long-term Progression &amp; Daily Variation Analysis</p>
+</div>
+<div class="ml-auto flex items-center gap-3">
+<i class="fas fa-chart-line text-2xl text-teal-700"></i>
+<span class="text-sm font-bold text-gray-500 uppercase tracking-wider">Data Focus</span>
+</div>
+</div>
+<!-- Main Content -->
+<div class="content-area">
+<!-- Left Column: Main Charts -->
+<div class="main-chart-col">
+<!-- Top Chart: Annual Trend -->
+<div class="chart-card" style="flex: 1.2;">
+<div class="chart-header">
+<h3 class="chart-title">
+<i class="fas fa-history text-blue-600"></i>
+                            Annual Average AQI Trend (2020 - 2026)
+                        </h3>
+<div class="flex gap-2 text-xs font-medium bg-gray-100 px-3 py-1 rounded-full text-gray-600">
+<span class="w-2 h-2 rounded-full bg-teal-600 mt-1"></span> Historic
+                            <span class="w-2 h-2 rounded-full bg-red-500 mt-1 ml-2"></span> Current (2026)
+                        </div>
+</div>
+<div class="chart-wrapper">
+<canvas id="annualTrendChart"></canvas>
+</div>
+</div>
+<!-- Bottom Chart: Day/Night Profile -->
+<div class="chart-card" style="flex: 0.8;">
+<div class="chart-header">
+<h3 class="chart-title">
+<i class="fas fa-clock text-purple-600"></i>
+                            24-Hour AQI Profile (Feb 2026 Average)
+                        </h3>
+<span class="text-xs font-bold text-gray-400 uppercase">Typical Daily Cycle</span>
+</div>
+<div class="chart-wrapper">
+<canvas id="dailyProfileChart"></canvas>
+</div>
+</div>
+</div>
+<!-- Right Column: Stats & Insights -->
+<div class="side-col">
+<!-- Key Stat Box -->
+<div class="stat-box">
+<p class="stat-label">Current Status (Feb 2026)</p>
+<div class="flex items-end gap-3">
+<p class="stat-value">177 AQI</p>
+<span class="text-red-500 font-bold mb-2 text-sm bg-red-50 px-2 py-1 rounded">UNHEALTHY</span>
+</div>
+<p class="text-xs text-gray-500 mt-2">
+<i class="fas fa-arrow-up text-red-500 mr-1"></i> Significant increase from 2020 baseline (91 AQI)
+                    </p>
+</div>
+<!-- Key Insights -->
+<div class="stat-time">
+<div class="chart-card" style="flex: 1;">
+<div class="chart-header">
+<h3 class="chart-title">Key Observations</h3>
+</div>
+<ul class="insight-list">
+<li class="insight-item">
+<i class="fas fa-exclamation-circle insight-icon"></i>
+<p class="m-0"><strong>Worsening Trend:</strong> Steady deterioration observed post-2020, driven by construction dust and vehicular emissions rebound.</p>
+</li>
+<li class="insight-item">
+<i class="fas fa-cloud-moon insight-icon"></i>
+<p class="m-0"><strong>Inversion Effect:</strong> Winter/post-monsoon months show severe spikes due to temperature inversion trapping pollutants.</p>
+</li>
+<li class="insight-item">
+<i class="fas fa-traffic-light insight-icon"></i>
+<p class="m-0"><strong>Peak Hours:</strong> Highest concentrations recorded during late night (10 PM - 2 AM) and morning rush hours.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- Monitoring Network -->
+ <div class="stat-watch">
+<div class="chart-card" style="flex: 0.8;">
+<div class="chart-header">
+<h3 class="chart-title">Monitoring Network</h3>
+<span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded font-bold">15 Active Stations</span>
+</div>
+<div class="station-grid">
+<div class="station-item"><div class="station-dot active"></div><p class="m-0">Bandra</p></div>
+<div class="station-item"><div class="station-dot active"></div><p class="m-0">Colaba</p></div>
+<div class="station-item"><div class="station-dot active"></div><p class="m-0">Sion</p></div>
+<div class="station-item"><div class="station-dot active"></div><p class="m-0">Worli</p></div>
+<div class="station-item"><div class="station-dot active"></div><p class="m-0">Borivali</p></div>
+<div class="station-item"><div class="station-dot active"></div><p class="m-0">Mulund</p></div>
+<div class="station-item"><div class="station-dot active"></div><p class="m-0">Chakala</p></div>
+<div class="station-item"><div class="station-dot active"></div><p class="m-0">Powai</p></div>
+</div>
+<p class="text-xs text-gray-400 mt-3 italic">Operated by MPCB &amp; IITM (SAFAR)</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<div class="footer-strip">
+<p>Data Source: AQI.in Historical Analysis; MPCB Annual Report 2023-24 (Table 5.11)</p>
+</div>
+</div>
+</div>
+<script>
+        // Chart 1: Annual Trend Line Chart
+        const ctx1 = document.getElementById('annualTrendChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: ['2020', '2021', '2022', '2023', '2024', '2025', '2026 (YTD)'],
+                datasets: [{
+                    label: 'Annual Avg AQI (US)',
+                    data: [91, 109, 114, 128, 145, 162, 177],
+                    borderColor: '#00695c',
+                    backgroundColor: (context) => {
+                        const ctx = context.chart.ctx;
+                        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+                        gradient.addColorStop(0, 'rgba(0, 105, 92, 0.4)');
+                        gradient.addColorStop(1, 'rgba(0, 105, 92, 0.0)');
+                        return gradient;
+                    },
+                    borderWidth: 3,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#00695c',
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        titleColor: '#1f2937',
+                        bodyColor: '#1f2937',
+                        borderColor: '#e2e8f0',
+                        borderWidth: 1,
+                        padding: 10,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return 'AQI: ' + context.raw;
+                            }
+                        }
+                    },
+                    annotation: {
+                        annotations: {
+                            line1: {
+                                type: 'line',
+                                yMin: 150,
+                                yMax: 150,
+                                borderColor: '#ef4444',
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                label: {
+                                    content: 'Unhealthy Threshold (150)',
+                                    enabled: true,
+                                    position: 'start',
+                                    backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                                    color: 'white',
+                                    font: { size: 10, weight: 'bold' }
+                                }
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 50,
+                        max: 200,
+                        grid: { color: '#f1f5f9' },
+                        title: { display: true, text: 'AQI (US Standard)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Chart 2: Daily Profile Line Chart
+        const ctx2 = document.getElementById('dailyProfileChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: ['12 AM', '3 AM', '6 AM', '9 AM', '12 PM', '3 PM', '6 PM', '9 PM'],
+                datasets: [{
+                    label: 'Hourly AQI',
+                    data: [195, 180, 165, 185, 160, 145, 170, 200],
+                    borderColor: '#8b5cf6',
+                    backgroundColor: 'transparent',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#8b5cf6',
+                    pointRadius: 4,
+                    tension: 0.4,
+                    borderDash: [0, 0]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        display: false,
+                        min: 100
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 10 } }
+                    }
+                }
+            }
+        });
+         document.addEventListener("keydown", e => {
+  if (e.key === "ArrowLeft") location.href = "slide4.html";
+  if (e.key === "ArrowRight") location.href = "slide6.html";
+});
+    </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "Mahim Creek Pollution Hotspot" },
+      "geometry": { "type": "Point", "coordinates": [72.838, 19.041] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Kurla Nallah Discharge Point" },
+      "geometry": { "type": "Point", "coordinates": [72.875, 19.078] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Worli Coastal Road Impact Zone" },
+      "geometry": { "type": "Point", "coordinates": [72.817, 18.997] }
+    }
+  ]
+}

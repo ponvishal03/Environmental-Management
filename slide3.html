@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mumbai at a Glance: Context &amp; Natural Assets</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+ body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', sans-serif;
+        background-color: #f0f4f8;
+        overflow: hidden;
+    }
+
+    .viewport {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f0f4f8;
+    }
+
+    .slide-container {
+        width: 1280px;
+        height: 720px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        background-color: #ffffff;
+        overflow: hidden;
+        transform-origin: center;
+        transform: scale(min(100vw / 1280, 100vh / 720));
+        box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        border-radius: 12px;
+    }
+        .header-bar {
+    height: 80px;
+    border-bottom: 4px solid #00695c;
+    display: flex;
+    align-items: center;
+    padding: 0 40px;
+}
+
+        .title-text {
+            font-family: 'Montserrat', sans-serif;
+            color: #1f2937;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .subtitle-text {
+            font-family: 'Roboto', sans-serif;
+            color: #00695c;
+            font-size: 18px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        .content-area {
+            flex: 1;
+            display: flex;
+            padding: 30px 40px;
+            gap: 30px;
+            height: calc(720px - 120px); 
+        }
+        .map-column {
+            flex: 0.6;
+            background-color: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .info-column {
+            flex: 0.4;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+        .map-container {
+            flex: 1;
+            width: 100%;
+            z-index: 1;
+        }
+        .map-overlay-legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-size: 12px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            margin-right: 8px;
+            border-radius: 2px;
+        }
+        .info-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #00695c;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            color: #334155;
+            font-size: 14px;
+        }
+        .feature-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #e0f2f1;
+            color: #00695c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .footer-strip {
+            height: 40px;
+            background-color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 12px;
+            color: #64748b;
+            flex-shrink: 0;
+        }
+        /* Navigation buttons */
+.next-btn, .prev-btn {
+    position: fixed;
+    bottom: 30px;
+    width: 56px;
+    height: 56px;
+    background: #00695c;
+    color: white;
+    font-size: 26px;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    transition: transform 0.2s ease, background 0.2s ease;
+    z-index: 99999;
+}
+
+.next-btn { right: 40px; }
+.prev-btn { left: 40px; }
+
+.next-btn:hover, .prev-btn:hover {
+    transform: scale(1.1);
+    background: #004d40;
+}
+    </style>
+</link></head>
+<body>
+<a href="slide2.html" class="prev-btn">⮜</a>
+<a href="slide4.html" class="next-btn">⮞</a>
+<div class="viewport">
+<div class="slide-container">
+<!-- Header -->
+<div class="header-bar">
+    <div>
+        <h1 class="title-text">Mumbai at a Glance: Context &amp; Natural Assets</h1>
+        <p class="subtitle-text">Geographic, Demographic &amp; Ecological Profile</p>
+    </div>
+    <div class="ml-auto flex items-center gap-3">
+        <i class="fas fa-map-marked-alt text-2xl text-teal-700"></i>
+        <span class="text-sm font-bold text-gray-500 uppercase tracking-wider">City Profile</span>
+    </div>
+</div>
+<!-- Main Content -->
+<div class="content-area">
+
+<div class="map-column shadow-md">
+    <div class="absolute top-4 left-4 z-10 bg-white/90 px-3 py-1 rounded shadow text-xs font-bold text-gray-700 uppercase">
+        Greater Mumbai Region
+    </div>
+    <div class="map-container" id="mumbaiMap"></div>
+
+    <div class="map-overlay-legend">
+        <div class="legend-item"><div class="legend-color" style="background:#22c55e"></div>Mangroves</div>
+        <div class="legend-item"><div class="legend-color" style="background:#3b82f6"></div>Coastal Zones</div>
+        <div class="legend-item"><div class="legend-color" style="background:#237145"></div>SGNP</div>
+        <div class="legend-item"><div class="legend-color" style="background:#ef4444"></div>Mithi River</div>
+    </div>
+</div>
+<!-- Right Column: Info & Stats -->
+<div class="info-column">
+<!-- Geography Card -->
+<div class="info-card">
+<div class="flex items-center mb-3">
+<i class="fas fa-globe-asia text-teal-600 mr-2"></i>
+<h3 class="text-lg font-bold text-gray-800 m-0">Geographic Context</h3>
+</div>
+<p class="text-sm text-gray-600 mb-2 leading-relaxed">
+                        A coastal megacity situated on Salsette Island, bounded by the Arabian Sea to the west and Thane Creek to the east. The city's linear geography creates unique environmental management challenges.
+                    </p>
+<div class="stat-grid">
+<div class="stat-item">
+<span class="stat-value text-teal-700">603 km²</span>
+<span class="stat-label">Total Area</span>
+</div>
+<div class="stat-item">
+<span class="stat-value text-blue-600">149 km</span>
+<span class="stat-label">Coastline</span>
+</div>
+</div>
+</div>
+<!-- Demographics Card -->
+<div class="info-card" style="border-left-color: #f59e0b;">
+<div class="flex items-center mb-3">
+<i class="fas fa-users text-amber-500 mr-2"></i>
+<h3 class="text-lg font-bold text-gray-800 m-0">Demographics &amp; Economy</h3>
+</div>
+<div class="stat-grid mb-3">
+<div class="stat-item">
+<span class="stat-value">~21 M</span>
+<span class="stat-label">Metro Population</span>
+</div>
+<div class="stat-item">
+<span class="stat-value">~30,000</span>
+<span class="stat-label">People / km² (Density)</span>
+</div>
+</div>
+<p class="text-sm text-gray-600 leading-relaxed">
+                        India's financial capital and a major port hub. High population density exerts immense pressure on infrastructure, waste management, and open spaces.
+                    </p>
+</div>
+<!-- Natural Features Card -->
+<div class="info-card" style="border-left-color: #22c55e;">
+<div class="flex items-center mb-3">
+<i class="fas fa-tree text-green-600 mr-2"></i>
+<h3 class="text-lg font-bold text-gray-800 m-0">Key Natural Assets</h3>
+</div>
+<ul class="feature-list">
+<li>
+<div class="feature-icon"><i class="fas fa-water"></i></div>
+<span><strong>Mithi River:</strong> 18 km river flowing from Vihar/Powai lakes to Mahim Creek.</span>
+</li>
+<li>
+<div class="feature-icon"><i class="fas fa-leaf"></i></div>
+<span><strong>Mangroves:</strong> ~59 km² cover acting as critical flood buffers and carbon sinks.</span>
+</li>
+<li>
+<div class="feature-icon"><i class="fas fa-umbrella-beach"></i></div>
+<span><strong>Coastal Zone:</strong> Extensive network of creeks (Mahim, Malad, Gorai) and beaches.</span>
+</li>
+<li>
+<div class="feature-icon"><i class="fas fa-mountain"></i></div>
+<span><strong>Sanjay Gandhi National Park:</strong> A unique protected forest within city limits.</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<div class="footer-strip">
+<p>Source: NASA Science (Mangroves); Census Data; Wikipedia (Mithi River); MPCB Reports</p>
+</div>
+</div>
+</div>
+<script>
+  var map = L.map('mumbaiMap', {
+    zoomControl: false,
+    attributionControl: false
+  }).setView([19.0760, 72.8777], 11);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19
+  }).addTo(map);
+
+  var allLayers = L.featureGroup().addTo(map);
+
+  function loadLayer(url, options) {
+    return fetch(url)
+      .then(res => {
+        if (!res.ok) throw new Error(url + " failed to load");
+        return res.json();
+      })
+      .then(data => {
+        var layer = L.geoJSON(data, options);
+        allLayers.addLayer(layer);
+      })
+      .catch(err => console.error(err));
+  }
+
+  Promise.all([
+    loadLayer("mithi.geojson", { style: { color: "#ef4444", weight: 4 } }),
+    loadLayer("mangroves.geojson", { style: { fillColor: "#22c55e", fillOpacity: 0.5, color: "transparent" } }),
+    loadLayer("sgnp.geojson", { style: { fillColor: "#237145", fillOpacity: 0.5, color: "transparent" } }),
+    loadLayer("coastline.geojson", { style: { color: "#3b82f6", weight: 2 } })
+  ]).then(() => {
+    if (allLayers.getLayers().length > 0) {
+      map.fitBounds(allLayers.getBounds(), { padding: [30, 30] });
+    }
+  });
+
+  // ---------- Keyboard Navigation ----------
+  document.addEventListener("keydown", e => {
+    if (e.key === "ArrowLeft") location.href = "slide2.html";
+    if (e.key === "ArrowRight") location.href = "slide4.html";
+  });
+</script>
+
+</body>
+</html>

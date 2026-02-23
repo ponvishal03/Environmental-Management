@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Water Quality: Mithi River &amp; Coastal Waters</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+         .body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', sans-serif;
+        background-color: #f0f4f8;
+        overflow: hidden;
+    }
+
+    .viewport {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f0f4f8;
+    }
+        .slide-container {
+        width: 1280px;
+        height: 720px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        background-color: #ffffff;
+        overflow: hidden;
+        transform-origin: center;
+        transform: scale(min(100vw / 1280, 100vh / 720));
+        box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        border-radius: 12px;
+    }
+        .header-bar {
+            height: 80px;
+            background-color: #ffffff;
+            border-bottom: 4px solid #0288d1;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            flex-shrink: 0;
+        }
+        .title-text {
+            font-family: 'Montserrat', sans-serif;
+            color: #1f2937;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .subtitle-text {
+            font-family: 'Roboto', sans-serif;
+            color: #0288d1;
+            font-size: 18px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        .content-area {
+            flex: 1;
+            display: flex;
+            padding: 30px 40px;
+            gap: 30px;
+            height: calc(720px - 120px); 
+        }
+        .map-column {
+            flex: 0.6;
+            background-color: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .info-column {
+            flex: 0.4;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+        .map-container {
+            flex: 1;
+            width: 100%;
+            z-index: 1;
+        }
+        .map-overlay-legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-size: 12px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            margin-right: 8px;
+            border-radius: 2px;
+        }
+        .legend-circle {
+            width: 10px;
+            height: 10px;
+            margin-right: 8px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 2px rgba(0,0,0,0.3);
+        }
+        .info-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #0288d1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .feature-list li {
+            display: flex;
+            align-items: start;
+            margin-bottom: 12px;
+            color: #334155;
+            font-size: 14px;
+        }
+        .feature-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #e1f5fe;
+            color: #0288d1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 12px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .footer-strip {
+            height: 40px;
+            background-color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 12px;
+            color: #64748b;
+            flex-shrink: 0;
+        }
+        .wqi-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            color: white;
+            margin-left: 6px;
+        }
+        .wqi-polluted { background-color: #ef4444; }
+        .wqi-poor { background-color: #f59e0b; }
+        .wqi-moderate { background-color: #fbbf24; color: #333; }
+        .wqi-good { background-color: #22c55e; }
+     .next-btn, .prev-btn {
+    position: fixed;
+    bottom: 30px;
+    width: 56px;
+    height: 56px;
+    background: #00695c;
+    color: white;
+    font-size: 26px;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    transition: transform 0.2s ease, background 0.2s ease;
+    z-index: 99999;
+}
+
+.next-btn { right: 40px; }
+.prev-btn { left: 40px; }
+
+.next-btn:hover, .prev-btn:hover {
+    transform: scale(1.1);
+    background: #004d40;
+}
+    </style>
+</head>
+<body>
+<a href="slide5.html" class="prev-btn">⮜</a>
+<a href="slide7.html" class="next-btn">⮞</a>
+<div class="viewport">
+<div class="slide-container">
+<!-- Header -->
+<div class="header-bar">
+<div>
+<h1 class="title-text">Water Quality: Mithi River &amp; Coastal Waters</h1>
+<p class="subtitle-text">Pollution Hotspots, Coastal Zones &amp; Monitoring Network</p>
+</div>
+<div class="ml-auto flex items-center gap-3">
+<i class="fas fa-water text-2xl text-blue-700"></i>
+<span class="text-sm font-bold text-gray-500 uppercase tracking-wider">Water Quality</span>
+</div>
+</div>
+<!-- Main Content -->
+<div class="content-area">
+<!-- Left Column: Map Visualization -->
+<div class="map-column shadow-md">
+<div class="absolute top-4 left-4 z-10 bg-white/90 px-3 py-1 rounded shadow text-xs font-bold text-gray-700 uppercase">
+                    Monitoring Network &amp; Pollution Status
+                </div>
+<div class="map-container" id="waterMap"></div>
+<div class="map-overlay-legend">
+<div class="font-bold text-gray-700 mb-2 border-b pb-1">Water Quality Status</div>
+<div class="legend-item">
+<div class="legend-circle" style="background-color: #ef4444;"></div>
+<span>Heavily Polluted (River)</span>
+</div>
+<div class="legend-item">
+<div class="legend-circle" style="background-color: #f59e0b;"></div>
+<span>Poor / Impaired (Creek)</span>
+</div>
+<div class="legend-item">
+<div class="legend-circle" style="background-color: #22c55e;"></div>
+<span>Moderate / Good (Sea)</span>
+</div>
+</div>
+</div>
+<!-- Right Column: Info & Stats -->
+<div class="info-column">
+<!-- Mithi River Card -->
+<div class="info-card" style="border-left-color: #ef4444;">
+<div class="flex items-center mb-3">
+<i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>
+<h3 class="text-lg font-bold text-gray-800 m-0">Mithi River (18 km) Status</h3>
+</div>
+<p class="text-sm text-gray-600 mb-3 leading-relaxed">
+                        Critical pollution hotspot receiving raw sewage, industrial effluents, and solid waste. Flows through dense industrial/slum areas (Saki Naka, Dharavi) before entering Mahim Creek.
+                    </p>
+<ul class="feature-list">
+<li>
+<div class="feature-icon bg-red-100 text-red-600"><i class="fas fa-biohazard"></i></div>
+<div>
+<span class="font-bold text-gray-700">High BOD/COD Levels:</span>
+<p class="m-0 text-xs text-gray-500">Consistently exceeds safe limits; Dissolved Oxygen (DO) often near zero in lower stretches.</p>
+</div>
+</li>
+<li>
+<div class="feature-icon bg-red-100 text-red-600"><i class="fas fa-trash-alt"></i></div>
+<div>
+<span class="font-bold text-gray-700">Solid Waste Dumping:</span>
+<p class="m-0 text-xs text-gray-500">Plastic and debris choke flow, exacerbating flood risks during monsoons.</p>
+</div>
+</li>
+</ul>
+</div>
+<!-- Coastal & Creek Card -->
+<div class="info-card" style="border-left-color: #f59e0b;">
+<div class="flex items-center mb-3">
+<i class="fas fa-water text-amber-500 mr-2"></i>
+<h3 class="text-lg font-bold text-gray-800 m-0">Coastal &amp; Creek Water Quality</h3>
+</div>
+<div class="stat-grid mb-3">
+<div class="stat-item">
+<span class="stat-value text-blue-600">11</span>
+<span class="stat-label">Monitoring Stations (MPCB)</span>
+</div>
+<div class="stat-item">
+<span class="stat-value text-amber-600">Variable</span>
+<span class="stat-label">Water Quality Index</span>
+</div>
+</div>
+<p class="text-sm text-gray-600 leading-relaxed mb-0">
+<strong>Creeks (Mahim, Thane):</strong> High tidal influence but degraded by wastewater outfalls. WQI typically in 'Polluted' to 'Poor' range.<br/>
+<strong>Coastal Sea:</strong> Better dilution; designated beaches monitored for recreational standards (Blue Flag pilot sites in state).
+                    </p>
+</div>
+<!-- Key Issues Summary -->
+<div class="info-card" style="border-left-color: #0288d1;">
+<div class="flex items-center mb-2">
+<i class="fas fa-search text-blue-600 mr-2"></i>
+<h3 class="text-lg font-bold text-gray-800 m-0">Monitoring Highlights</h3>
+</div>
+<p class="text-sm text-gray-600 m-0">
+                        MPCB &amp; BMC monitor 11 locations across Mumbai region. Data indicates urgent need for sewage treatment upgrades to prevent untreated discharge into creeks.
+                    </p>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<div class="footer-strip">
+<p>Source: MPCB Annual Report 2023-24; Wikipedia (Mithi River); CPCB Water Quality Data</p>
+</div>
+</div>
+</div>
+<script>
+        // Initialize Leaflet Map
+        var map = L.map('waterMap', {
+            zoomControl: false,
+            attributionControl: false
+        }).setView([19.0800, 72.8900], 11);
+
+        // Add a light/clean tile layer
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19
+        }).addTo(map);
+
+
+        // 2. Monitoring Stations / Sampling Points
+        // We will simulate 11 stations as per data, categorized by WQI
+        var stations = [
+            // Mithi River Stations (Polluted)
+            { name: "Mithi River (Powai)", coords: [19.1250, 72.9050], status: "polluted" },
+            { name: "Mithi River (Saki Naka)", coords: [19.1100, 72.8900], status: "polluted" },
+            { name: "Mithi River (Kurla)", coords: [19.0750, 72.8750], status: "polluted" },
+            { name: "Mahim Creek", coords: [19.0450, 72.8450], status: "polluted" },
+
+            // Coastal / Creek Stations (Poor to Moderate)
+            { name: "Thane Creek", coords: [19.1400, 72.9800], status: "poor" },
+            { name: "Versova Creek", coords: [19.1300, 72.8100], status: "poor" },
+            { name: "Malad Creek", coords: [19.1900, 72.8300], status: "poor" },
+            { name: "Manori Creek", coords: [19.2100, 72.7900], status: "moderate" },
+
+            // Sea / Beach Stations (Moderate to Good)
+            { name: "Juhu Beach", coords: [19.0900, 72.8250], status: "moderate" },
+            { name: "Girgaum Chowpatty", coords: [18.9500, 72.8100], status: "moderate" },
+            { name: "Gateway of India", coords: [18.9220, 72.8350], status: "moderate" }
+        ];
+
+        stations.forEach(st => {
+            var color;
+            var radius = 8;
+            
+            if (st.status === 'polluted') color = '#ef4444'; // Red
+            else if (st.status === 'poor') color = '#f59e0b'; // Amber
+            else color = '#22c55e'; // Green
+
+            L.circleMarker(st.coords, {
+                radius: radius,
+                fillColor: color,
+                color: '#fff',
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 0.9
+            }).addTo(map).bindPopup(`<b>${st.name}</b><br>Status: ${st.status.toUpperCase()}`);
+        });
+             document.addEventListener("keydown", e => {
+  if (e.key === "ArrowLeft") location.href = "slide5.html";
+  if (e.key === "ArrowRight") location.href = "slide7.html";
+});
+    </script>
+</body>
+</html>
